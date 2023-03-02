@@ -1,7 +1,7 @@
-#include "DArray.cpp"
+#include "DArray.h"
 
 int main(int argc, char** argv) {
-	DArray a;
+	DArray<double> a;
 	a.InsertAt(0, 2.1);
 	a.Print();
 
@@ -15,18 +15,18 @@ int main(int argc, char** argv) {
 	a.InsertAt(0, 4.1);
 	a.Print();
 
-	DArray acopy = a; // �˴��õ��˿������캯��
+	DArray<double> acopy = a; // �˴��õ��˿������캯��
 	acopy.Print();
 
-	DArray acopy2(a); // ������ͬ���������䣬���ǳ�ʼ��
+	DArray<double> acopy2(a); // ������ͬ���������䣬���ǳ�ʼ��
 	acopy2.Print();
 
-	DArray acopy3, acopy4;
+	DArray<double> acopy3, acopy4;
 	acopy4 = acopy3 = a; // �˴��õ��˸�ֵ��������"="������
 	acopy3.Print();
 	acopy4.Print();
 
-	DArray b;
+	DArray<int> b;
 	b.PushBack(21);
 	b.Print();
 	b.DeleteAt(0);
@@ -35,7 +35,7 @@ int main(int argc, char** argv) {
 	b.SetSize(5);
 	b.Print();
 
-	DArray c;
+	DArray<char> c;
 	c.PushBack('a');
 	c.PushBack('b');
 	c.PushBack('c');

@@ -1,0 +1,151 @@
+\documentclass[12pt, a4paper, oneside]{ctexart}
+\usepackage{amsmath, amsthm, amssymb, graphicx}
+\usepackage{hyperref}
+\usepackage{listings}
+\usepackage{xcolor}
+\usepackage{color}
+\usepackage{enumerate}
+\usepackage{epstopdf}
+\usepackage{float}
+\usepackage{framed}
+\usepackage[ruled,vlined]{algorithm2e}
+\hypersetup{
+    colorlinks=true,
+    linkcolor=blue,
+    filecolor=blue,      
+    urlcolor=blue,
+    citecolor=cyan,
+}
+\definecolor{dkgreen}{rgb}{0,0.6,0}
+\definecolor{gray}{rgb}{0.5,0.5,0.5}
+\definecolor{mauve}{rgb}{0.58,0,0.82}
+\definecolor{shadecolor}{rgb}{0.5,0.5,0.5}
+\lstset{ %
+    language=Python,                % the language of the code
+    basicstyle=\footnotesize,           % the size of the fonts that are used for the code
+    numbers=left,                   % where to put the line-numbers
+    %numberstyle=\tiny\color{gray},  % the style that is used for the line-numbers
+    %stepnumber=2,                   % the step between two line-numbers. If it's 1, each line 
+                            % will be numbered
+    %numbersep=5pt,                  % how far the line-numbers are from the code
+    %backgroundcolor=\color{blue},      % choose the background color. You must add \usepackage{color}
+    showspaces=false,               % show spaces adding particular underscores
+    %showstringspaces=false,         % underline spaces within strings
+    showtabs=false,                 % show tabs within strings adding particular underscores
+    frame=single,                   % adds a frame around the code
+    rulecolor=\color{black},        % if not set, the frame-color may be changed on line-breaks within not-black text (e.g. commens (green here))
+    tabsize=2,                      % sets default tabsize to 2 spaces
+    captionpos=b,                   % sets the caption-position to bottom
+    breaklines=true,                % sets automatic line breaking
+    breakatwhitespace=false,        % sets if automatic breaks should only happen at whitespace
+    % title=\lstname,                   % show the filename of files included with \lstinputlisting;
+                            % also try caption instead of title
+    keywordstyle=\color{blue},          % keyword style
+    commentstyle=\color{dkgreen},       % comment style
+    stringstyle=\color{mauve},         % string literal style
+    escapeinside={\%*}{*)},            % if you want to add LaTeX within your code
+    morekeywords={*,...}               % if you want to add more keywords to the set
+}
+\title{Homework1}
+\author{Xiaoma}
+\date{\today}
+\begin{document}
+\maketitle
+\section{实验目的}
+\textbf{彩色图像灰度化}
+\begin{itemize}
+    \item 建立相应的数学模型
+    \item 测试结果
+    \item 实验分析
+\end{itemize}
+
+\section{实验原理}
+\subsection{灰度化}
+\begin{itemize}
+    \item 灰度化处理就是将一幅彩色图片转化为灰度图片的过程，若用RGB进行彩色信息表达，则灰度化
+    就是实现R、G、B三个分量相等的过程
+    \item 若彩色图像不进行灰度化，则对于计算机来说，像素点将有$256*256*256$种可能，将图像灰度化以后
+    ，一个像素点的变化只有256种，可以简化矩阵，提高运算速度
+\end{itemize}
+
+\subsubsection{常用的灰度化方法}
+\begin{itemize}
+    \item 最大值法
+    \item 均值法
+    \item 加权平均法
+\end{itemize}
+
+\subsubsection{普通灰度化方法的优点缺点}
+\begin{itemize}
+    \item 优点： \begin{itemize}
+        \item 计算方法简便，运算速度快
+        \item 易于理解
+    \end{itemize}
+    \item 缺点： \begin{itemize}
+        \item 不考虑图像本身的特征进行灰度化，会丧失大量信息
+    \end{itemize}
+\end{itemize}
+
+\subsection{\href{https://users.cs.northwestern.edu/~ago820/color2gray/}{改进的灰度化方法}}
+
+\subsubsection{算法的基本思想}
+将彩色图片的色度平面CIELab进行有符号的色度距离计算，将原图片的色度和亮度变化映射到
+灰度图像中以保留彩色图像的显著特征。
+
+\subsubsection{算法基本原理}
+
+\begin{enumerate}
+    \item 将输入的图像转化为CIELlab形式，其欧式距离与感知差异性密切相关。
+    
+    对于每个像素点$i$及其相邻的像素点$j$，我们定义一个有符号的距离标量$\delta _{ij}$，其基于$i$和$j$之间的
+    亮度和色度差异，像素$i$和像素$j$的灰度差为$(g_{i} - g_{j})$。故我们需要找到最优的$g$使得$g_{ij}$接近$\delta_{ij}$
+    \item 在本算法中，将彩色图像中的差异编码为灰度图像中的亮度差异，若想产生合适的结果，
+    往往要考虑美学因素，所以我们引入由用户定义的若干变量来控制色差到灰度差异的映射：\begin{enumerate}
+        \item $\theta $控制色差是否映射到亮度值的变化，划分色度平面，并决定色差是否会使源亮度差变暗或变亮。
+        \item $\alpha $控制应用于源亮度值的色度变化量，为大色度差对给定像素的当前亮度值可能产生的影响的大小设置了上界和下界，以便由于色度值引起的偏移在$[−\alpha， \alpha]$之内。
+        \item $\mu $控制用于色度估计和亮度变化的邻域大小，表明用户更感兴趣的是保留局部变化还是全局变化。
+
+    \end{enumerate}
+    在$CIELab$空间中，亮度差为$$\Delta L_{ij} = L_{i} - L_{j}$$
+    $a^{*}$通道的差异为$\Delta A_{ij}$，
+    $b^{*}$通道的差异为$\Delta B_{ij}$
+
+    色差为$$\Delta \vec{C_{ij}} = \Delta A_{ij} - \Delta B{ij}$$
+
+    为了确定$\delta_{ij}$，我们将$L_{ij}$ 与色差$\Delta \vec{C_{ij}}$进行比较，由于
+    $L_{ij}$是标量，$\vec{\Delta C_{ij}}$是二维向量，首先使用欧几里得范数将$\Delta \vec{C_{ij}}$
+    映射到一维$\| \vec{\Delta C_{ij}} \Vert  $，然后为其选择适当的符号，因为范数的值总是正的，但是
+    $\delta_{ij}$是一个有符号标量，因此我们使用$\theta$，用以表示$\Delta a^{*} \Delta b^{*}$
+    色度平面的划分，设$\vec{v_{\theta}}$是由$\theta$对于$\Delta a^{*}$定义的归一化向量，
+    设色差的符号与$  \vec{\Delta C_{ij}} * v_{\theta} $的符号相同，从而$\theta$指定了$\| \Delta \vec{C_{ij}} \Vert$转为有符号量
+
+    最后，定义目标差$\delta_{ij}$，如果绝对亮度小于色差，将$\delta_{ij}$设为色差的度量，否则$\delta_{ij}$
+    设置为亮度差，则$\delta_{ij}$的定义为
+    $$crunch(x) = \alpha * tanh(\frac{x}{\alpha})$$
+    $$\vec{v_{\theta}} = (\cos \theta, \sin \theta)$$
+    $$\delta(\alpha, \theta) = \begin{cases}
+        \Delta L_{ij}   if | \Delta L_{ij}\vert > crunch (\| \vec{\Delta C_{ij}}\Vert )\\
+
+        crunch(\| \vec{\Delta C_{ij}}\Vert ) if \vec{\Delta C_{ij}} * v_{\theta} \geq 0\\
+
+        crunch(- \| \vec{\Delta C_{ij}}\Vert) otherwise
+    \end{cases}$$
+
+    \item 优化问题，使用共轭梯度法最小化目标函数$f(g)$
+    $$g(g) = \sum_{(i,j) \in K} ((g_{i} - g_{j}) - \delta_{ij})^{2}$$
+    移动像素$f(g) = f(g + c)$，已知$f(g)$是凸函数，则存在全局最优解
+
+\end{enumerate}
+\subsubsection{改进灰度化方法的优缺点}
+\begin{itemize}
+    \item 优点：\begin{itemize}
+        \item 能极大程度的保留原彩色图片的信息
+    \end{itemize}
+    \item 缺点：\begin{itemize}
+        \item 对于一个$m * m$的图像，算法时间复杂度达到了$O(m^{4})$（硬件优化可达到$O(m^{2}) - O(m^{3})$，时间消耗过大
+    \end{itemize}
+\end{itemize}
+
+\section{测试结果}
+
+\end{document}

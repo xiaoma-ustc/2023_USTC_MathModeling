@@ -1,0 +1,199 @@
+\documentclass{article}
+\usepackage[UTF8]{ctex}
+\usepackage[tc]{titlepic}
+\usepackage{amsmath, amsthm, amssymb, graphicx}
+\usepackage{hyperref}
+\usepackage{listings}
+\usepackage{titlesec}
+\usepackage{cite}
+\usepackage{fancyhdr}
+\usepackage{booktabs}
+\usepackage{graphicx}
+\usepackage{geometry}
+\usepackage{caption}
+\usepackage{subfigure}
+\usepackage[section]{placeins}
+\geometry{a4paper,scale=0.8}
+\pagestyle{fancy}
+
+\lhead{第 3 次作业\\\today}
+\chead{中国科学技术大学\\数学建模课程}
+
+\rhead{Assignment 3\\ {\CTEXoptions[today=old]\today}}
+\newcommand{\upcite}[1]{\textsuperscript{\cite{#1}}}
+
+\titleformat*{\section}{\bfseries\Large}
+\titleformat*{\subsection}{\bfseries\large}
+
+\title{\bfseries 数据拟合模型-使用神经网络进行昆虫分类}
+\author{Xiaoma \quad   \quad  }
+
+\begin{document}
+\maketitle
+\begin{abstract}
+    神经网络作为一种已被广泛使用的模型，已经被应用于各个领域，本文将使用
+    全连接神经网络探索昆虫的分类问题，并对分类结果进行讨论。
+    
+    
+\end{abstract}
+
+% \setcounter{secnumdepth}{1}
+ \setcounter{section}{1}
+\section*{\centerline{一、前言}}
+人工神经网络（Artificial Neural Networks，简写为ANNs）
+也简称为神经网络（NNs）或称作连接模型（Connection Model），
+它是一种模仿动物神经网络行为特征，进行分布式并行信息处理的算法数学模型。
+这种网络依靠系统的复杂程度，通过调整内部大量节点之间相互连接的关系，
+从而达到处理信息的目的。
+
+神经网络的优势：
+\begin{itemize}
+    \item 解决线性模型难以处理的线性不可分问题
+    \item 线性模型泛化能力较弱
+    \item 等等
+\end{itemize}
+
+全连接神经网络的结构图为
+\begin{figure*}[htbp]
+    \centering
+	\includegraphics[width=0.8\textwidth]{./img/1.png}
+\end{figure*}
+
+
+ \setcounter{section}{2}
+\section*{\centerline{二、相关工作}}
+\begin{enumerate}
+    \item 基于全连接神经网络实现昆虫分类问题
+    \item 比较不同网络结构对分类器性能的影响
+    \item 比较不同优化器，激活函数对分类器性能的影响
+\end{enumerate}
+
+ \setcounter{section}{3}
+\section*{\centerline{三、问题分析}}
+    \subsection{分析}
+根据数据的聚类分布，我们发现昆虫的分类边界是非线性的，故使用线性模型很难得到
+较好的结果，故使用全连接神经网络模型。
+\begin{figure*}[htbp]
+    \centering
+	\includegraphics[width=0.6\textwidth]{./img/2.png}
+\end{figure*}
+\setcounter{section}{4}
+\section*{\centerline{四、建模的假设}}
+    \subsection{假设1}
+    假设数据集中没有确实值
+    \subsection{假设2}
+    假设每个数据对应的标签一定正确
+
+
+
+ \setcounter{section}{5}
+ \section*{\centerline{五、符号说明}}
+ \begin{table}[htbp]
+    
+    \centering%把表居中
+    \begin{tabular}{cc}%内容全部居中
+    \toprule%第一道横线
+    符号&说明 \\
+    \midrule%第二道横线 
+    \textbf{Model} & 全连接神经网络分类器\\
+    \textbf{Net} & 全连接神经网络模型\\
+    \textbf{Val\_ACC} & 分类器的验证集精度\\
+    \textbf{Train\_ACC} & 分类器的训练集精度\\
+    \textbf{Val\_ACC} & 分类器的验证集损失\\
+    \textbf{Train\_ACC} & 分类器的训练集损失\\
+
+    \bottomrule%第三道横线
+    \end{tabular}
+\end{table}
+
+ \setcounter{section}{6}
+\section*{\centerline{六、数学模型建立}}
+\subsection{神经网络的结构}
+首先搭建一个神经网络模型，其结构为（初始结构不代表最终网络结构）
+\begin{figure*}[htbp]
+    \centering
+	\includegraphics[width=0.8\textwidth]{./img/3.png}
+\end{figure*}
+\clearpage
+\subsection{模型调节-网络层数与神经元个数}
+已知数据集样本个数与特征数目较少，故首先假设该分类器不需要过大的网络深度与神经元个数，分别
+尝试不同的网络层数与神经元个数，结果为
+\begin{table}[htbp]
+    
+    \centering%把表居中
+    \begin{tabular}{cccc}%内容全部居中
+    \toprule%第一道横线
+    网络层数&每层最大神经元数目&\textbf{Train\_ACC}&\textbf{Val\_ACC} \\
+    \midrule%第二道横线 
+    \textbf{3} & \textbf{100} &\textbf{0.935} &\textbf{0.955}\\
+    \textbf{5} & \textbf{100} &\textbf{0.947} &\textbf{0.951}\\
+    \textbf{10}  & \textbf{100} &\textbf{0.952} &\textbf{0.976}\\
+    \textbf{3}  & \textbf{10} &\textbf{0.926} &\textbf{0.933}\\
+    \textbf{5} & \textbf{10} &\textbf{0.910} &\textbf{0.922}\\
+    \textbf{10}  & \textbf{10} &\textbf{0.916} &\textbf{0.948}\\
+
+    \bottomrule%第三道横线
+    \end{tabular}
+\end{table}
+
+\subsection{模型调节-优化器与激活函数}
+\subsubsection{优化器选择}
+在上述参数调节过程中使用的优化器为\textbf{optim.Adam}，将其训练过程的loss曲线与\textbf{optim.SGD}进
+行比较
+\begin{figure}[h!]
+    \centering
+        \subfigure[$LOSS-Adam$]{\includegraphics[width=0.4\hsize]{./img/5.png}}  
+        \subfigure[$ACC-SGD$]{\includegraphics[width=0.4\hsize]{./img/7.png}} 
+        
+\end{figure}
+
+
+可以发现使用\textbf{optim.Adam}的分类器在训练过程中收敛速度和收敛值均优于使用\textbf{optim.SGD}。
+ 
+\subsubsection{激活函数选择}
+分别使用\textbf{ReLU, Softmax, Tanh}进行分类器训练，并比较其精度的变化情况。
+\begin{figure}[h!]
+    \centering
+        \subfigure[$ACC-ReLU$]{\includegraphics[width=0.4\hsize]{./img/4.png}}  
+        \subfigure[$ACC-Softmax$]{\includegraphics[width=0.4\hsize]{./img/8.png}} 
+        \subfigure[$ACC-Tanh$]{\includegraphics[width=0.4\hsize]{./img/9.png}} 
+\end{figure}
+
+发现使用\textbf{ReLU}作为激活函数时，分类器表现最优。
+\setcounter{section}{7}
+ \section*{\centerline{七、结果（与对比）}}
+根据上述参数调节，我们得到的最优网络结构如下，
+\begin{figure*}[htbp]
+    \centering
+	\includegraphics[width=0.8\textwidth]{./img/6.png}
+\end{figure*}
+使用其训练得到分类器并保存模型。
+\begin{figure}[h!]
+    \centering
+        \subfigure[$LOSS$]{\includegraphics[width=0.4\hsize]{./img/4.png}}  
+        \subfigure[$ACC$]{\includegraphics[width=0.4\hsize]{./img/5.png}} 
+        
+\end{figure}
+
+ \setcounter{section}{8}
+\section*{\centerline{八、结论}}
+    \begin{enumerate}
+        \item 若激活函数与优化器合适，增大网络深度与宽度可以提升分类器性能
+        \item 若数据集较小且规整，网络结构的调整对分类器的性能影响较小
+        \item 对于本次实验数据集，Adam优化比SGD优化更好
+        \item 对于本次实验数据集，激活函数选择ReLU性能更好
+    \end{enumerate}
+ \setcounter{section}{9}
+\section*{\centerline{九、问题}}
+    参数调节过程为分步调参，二维交叉调参。
+    
+    由于时间原因，并没有尝试其他神经网络框架进行分析。
+
+
+
+
+    
+
+\bibliographystyle{plain}
+\bibliography{refer}
+\end{document}
